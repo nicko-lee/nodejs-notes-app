@@ -1,5 +1,7 @@
 const fs = require('fs')
+const chalk = require('chalk');
 
+// Job is to retrieve notes
 const getNotes = function () {
     return ("Your notes...")
 }
@@ -18,12 +20,32 @@ const addNote = function (title, body) {
             body: body
         })
         saveNotes(notes)
-        console.log('New note added!')
+        console.log(chalk.green.inverse('New note added!'))
     } else {
-        console.log('Note title taken!')
+        console.log(chalk.red.inverse('Note title taken!'))
     }
 }
 
+// Job is to remove a note
+const removeNote = function (title) {
+    // Load existing notes
+    const notes = loadNotes()
+
+    // See if note exists in array using title as unique key. Array.filter() returns a subset of original array
+    const notesToKeep = notes.filter(function (note) {
+        return note.title !== title // filter condition. Anything true will get pushed to filtered array
+    })
+
+    // Save filtered array and give user the right messaging
+    if (notesToKeep.length === notes.length) { // which means nothing was filtered out
+        console.log(chalk.red.inverse('Note with title "' + title + '" doesn\'t exist. Did you provide the right title?'))
+    } else {
+        saveNotes(notesToKeep)
+        console.log(chalk.green.inverse('Note with title "' + title + '" deleted!'))
+    }
+}
+
+// Reusable helper function
 const loadNotes = function () {
     try {
         const dataBuffer = fs.readFileSync('notes.json')
@@ -34,12 +56,13 @@ const loadNotes = function () {
     }
 }
 
+// Reusable helper function
 const saveNotes = function (notes) {
     fs.writeFileSync('notes.json', JSON.stringify(notes))
 }
 
-
 module.exports = {
     getNotes: getNotes,
-    addNote: addNote
+    addNote: addNote,
+    removeNote: removeNote
 }
