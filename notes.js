@@ -1,12 +1,8 @@
 const fs = require('fs')
 const chalk = require('chalk');
+const yargs = require('yargs');
 
-// Job is to retrieve notes
-const getNotes = () => {
-    return ("Your notes...")
-}
-
-// Job is to list notes
+// Job is to retrieve and list all notes
 const listnote = () => {
     const notes = loadNotes()
 
@@ -15,13 +11,28 @@ const listnote = () => {
     notes.forEach(note => console.log(note.title)); // Print out each individual note
 }
 
+// Job is to read a specific note
+const readNote = (title) => {
+    const notes = loadNotes()
+
+    // Search for the note
+    const noteFound = notes.find((note) => note.title === title) // this var might contain an object and it might not. That's what we test for below
+
+    if (noteFound) {
+        console.log(chalk.bold.inverse(noteFound.title))
+        console.log(noteFound.body)
+    } else {
+        console.log(chalk.red.inverse('Note with title "' + title + '" doesn\'t exist'))
+    }
+}
+
 // Job is to get the note saved to the data store
 const addNote = (title, body) => {
     const notes = loadNotes()
-    // returns a filtered array based on the boolean returning condition specified in the function logic. If true means it is a duplicate
-    const duplicateNotes = notes.filter((note) => note.title === title)
+    
+    const duplicateNote = notes.find((note) => note.title === title)
 
-    if (duplicateNotes.length === 0) { // i.e. no duplicates since duplicateNotes array is empty
+    if (!duplicateNote) { // i.e. there is no duplicate note. Also could check for if duplicateNote === undefined
         notes.push({
             title: title,
             body: body
@@ -68,8 +79,8 @@ const saveNotes = (notes) => {
 }
 
 module.exports = {
-    getNotes: getNotes,
     addNote: addNote,
     removeNote: removeNote,
-    listnote: listnote
+    listnote: listnote,
+    readNote: readNote
 }
