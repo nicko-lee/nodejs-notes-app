@@ -6,6 +6,15 @@ const getNotes = () => {
     return ("Your notes...")
 }
 
+// Job is to list notes
+const listnote = () => {
+    const notes = loadNotes()
+
+    console.log(chalk.bold.blue.inverse('Your notes')) // Give it a styled header
+
+    notes.forEach(note => console.log(note.title)); // Print out each individual note
+}
+
 // Job is to get the note saved to the data store
 const addNote = (title, body) => {
     const notes = loadNotes()
@@ -61,5 +70,6 @@ const saveNotes = (notes) => {
 module.exports = {
     getNotes: getNotes,
     addNote: addNote,
-    removeNote: removeNote
+    removeNote: removeNote,
+    listnote: listnote
 }
